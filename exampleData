@@ -1,0 +1,32 @@
+// Simulate fetching wallet data
+const walletData = {
+  address: "5zy2vhX3TJhjGBTypj2xjGsL2QF3Rn95nmjuu82gvXzN",
+  activities: {
+    last30Days: 47,
+    totalTransactions: 285
+  },
+  holdings: [
+    {
+      token: "SOL",
+      balance: 12.45,
+      value_usd: 1432.67,
+      recent_trades: [
+        { type: "buy", price: 112.45, timestamp: "2025-01-14T10:20:00Z" },
+        { type: "sell", price: 118.90, timestamp: "2025-01-15T15:45:00Z" }
+      ]
+    },
+    {
+      token: "BONK",
+      balance: 150000,
+      value_usd: 234.56,
+      recent_trades: [
+        { type: "buy", price: 0.0015, timestamp: "2025-01-13T08:30:00Z" }
+      ]
+    }
+  ],
+  tradingPatterns: {
+    avgHoldTime: "3.2 days",
+    profitableTradesRatio: 0.65,
+    mostActiveHours: "14:00-22:00 UTC"
+  }
+};
