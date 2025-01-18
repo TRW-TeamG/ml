@@ -50,6 +50,6 @@ def process_json(file_path):
     return pd.DataFrame(data_cleaned)
 
 # Example usage
-df=(process_json("exampleData.json"))
-output_file = "output_data.csv"
-df.to_csv(output_file, index=False)
+# df=(process_json("exampleData.json"))
+# output_file = "output_data.csv"
+# df.to_csv(output_file, index=False)
