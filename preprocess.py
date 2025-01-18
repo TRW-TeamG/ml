@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import datetime
 
 def nft_pnl(token_data): # calculates overall profit and loss ratio
     nft_pnl= token_data['pnl']['nft_pnl']
@@ -28,6 +29,7 @@ def process_json(file_path):
             entry['total_token_balance']= list(map(lambda x: x / 1000000, entry['total_token_balance']))
             entry['total_sol_balance']= list(map(lambda x: x / 1000000, entry['total_sol_balance']))
             entry['total_nft_balance']= list(map(lambda x: x / 1000000, entry['total_nft_balance']))
+            data_entry['date_wallet_created']=  datetime.datetime.utcfromtimestamp(entry['wallet_genesis']).strftime('%Y-%m-%d')  #address
             data_entry['address']= entry['address'] #address
  
             data_entry['trading_pnl']= entry['pnl']['trading_pnl'] #get trading pnl
@@ -50,6 +52,18 @@ def process_json(file_path):
     return pd.DataFrame(data_cleaned)
 
 # Example usage
-# df=(process_json("exampleData.json"))
+data= process_json("exampleData.json")
+
+base_prompt = f"""
+Data:
+
+{data}
+
+Here's the dataset that I provided. Each entry is a wallet's performance. It shows the trading and NFT profit and loss ratios, 
+win rates, liquidity ratio, trading frequency, NFT sales rate, and proportion of successful trades. 
+Analyze the dataset and recommend me trading strategies based on the data.
+"""
+
+print(base_prompt)
 # output_file = "output_data.csv"
 # df.to_csv(output_file, index=False)
