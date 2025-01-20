@@ -54,16 +54,47 @@ def process_json(file_path):
 # Example usage
 data= process_json("exampleData.json")
 
-base_prompt = f"""
-Data:
+# print(data)
 
-{data}
 
-Here's the dataset that I provided. Each entry is a wallet's performance. It shows the trading and NFT profit and loss ratios, 
-win rates, liquidity ratio, trading frequency, NFT sales rate, and proportion of successful trades. 
-Analyze the dataset and recommend me trading strategies based on the data.
-"""
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
-print(base_prompt)
+# Select numeric columns for clustering
+numeric_data = data.select_dtypes(include=['float64'])
+
+# Standardize the data
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(numeric_data)
+
+# Perform k-means clustering
+kmeans = KMeans(n_clusters=3, random_state=42)
+clusters = kmeans.fit_predict(scaled_data)
+
+# Add the cluster labels to the original DataFrame
+data['Cluster'] = clusters
+
+# Plotting the first two features with clusters
+plt.figure(figsize=(8, 6))
+plt.scatter(scaled_data[:, 0], scaled_data[:, 1], c=clusters, cmap='viridis', s=50)
+# plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=200, label='Centroids')
+plt.title('K-Means Clustering')
+plt.xlabel('Feature 1 (Standardized)')
+plt.ylabel('Feature 2 (Standardized)')
+plt.legend()
+plt.show()
+
+# base_prompt = f"""
+# Data:
+
+# {data}
+
+# Here's the dataset that I provided. Each entry is a wallet's performance. It shows the trading and NFT profit and loss ratios, 
+# win rates, liquidity ratio, trading frequency, NFT sales rate, and proportion of successful trades. 
+# Analyze the dataset and recommend me trading strategies based on the data.
+# """
+
+# print(base_prompt)
 # output_file = "output_data.csv"
 # df.to_csv(output_file, index=False)
