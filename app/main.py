@@ -10,11 +10,11 @@ model = pickle.load(pickle_in)
 
 # Define the input schema
 class PredictionInput(BaseModel):
-    nft_pl_ratio: float
-    trading_pnl_ratio: float
-    liquidity_ratio: float
-    trading_frequency: float
-    nft_sales_rate: float
+    nft_pl_ratio: float #nft pnl ratio is calculated by dividing nft_pnl by total pnl (realized_pnl + unrealized_pnl)
+    trading_pnl_ratio: float #trading_pnl ratio is calculated by dividing trading_pnl by total pnl (realized_pnl + unrealized_pnl)
+    liquidity_ratio: float #liquidity ratio is calculated by dividing number_of_active_trades by total_number_of_trades
+    trading_frequency: float #trading frequency is calculated by dividing number_of_active_trades by total_number_of_trades
+    nft_sales_rate: float #nft sales rate is calculated by dividing number_of_nft_sales by total_number_of_nft_trades
 
 app = FastAPI(
     title="Trading PnL Prediction API",
