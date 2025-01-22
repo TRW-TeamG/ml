@@ -68,10 +68,11 @@ pip install -r requirements.txt
 Save the following JSON in a file (e.g., `input.json`):
 ```json
 {
-  "feature_1": 5.1,
-  "feature_2": 3.5,
-  "feature_3": 1.4,
-  "feature_4": 0.2
+  "nft_pl_ratio": 0.8,
+  "trading_pnl_ratio": 0.7,
+  "liquidity_ratio": 0.6,
+  "trading_frequency": 1.2,
+  "nft_sales_rate": -0.3
 }
 ```
 
@@ -84,7 +85,7 @@ curl -X POST "http://localhost:8000/predict" -H "Content-Type: application/json"
 Response:
 ```json
 {
-  "prediction": "class_label"
+  "prediction": 0.435
 }
 ```
 
