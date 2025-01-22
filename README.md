@@ -13,7 +13,7 @@ This repository contains a Random Forest Machine Learning model served through a
 │   ├── main.py                 # FastAPI application code
 │   ├── model.pkl               # Serialized ML model
 │   ├── preprocess.py           # Preprocessing logic (if applicable)
-│   ├── test_trainer.py         # Model training/testing script
+│   ├── mlmodel.py              # Model training/testing script
 ├── Dockerfile                  # Docker build instructions
 ├── docker-compose.yaml         # Optional for multi-container setups
 ├── requirements.txt            # Python dependencies
