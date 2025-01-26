@@ -1,4 +1,3 @@
-
 # ML Model Deployment with FastAPI and Docker
 
 This repository contains a Random Forest Machine Learning model served through a FastAPI application. The application is containerized with Docker, making it easy to deploy and use across environments. 🎉
@@ -28,6 +27,7 @@ This repository contains a Random Forest Machine Learning model served through a
 - 📦 **Dockerized**: Fully containerized for portability.
 - 📄 **Example Input**: JSON file to test API endpoints.
 - 🛠️ **Customizable**: Easily extend or modify the ML model and logic.
+- 🔑 **Google Gemini API Integration**: Requires a free Google Gemini API key.
 
 ---
 
@@ -45,7 +45,13 @@ If running locally without Docker:
 pip install -r requirements.txt
 ```
 
-### **3. Build and Run with Docker**
+### **3. Add API Key**
+You need a free Google Gemini API key to use the application. `https://ai.google.dev/gemini-api/docs/api-key?authuser=1`  Add your API key to a `.env` file in the root directory:
+```plaintext
+GOOGLE_API_KEY=your-google-api-key
+```
+
+### **4. Build and Run with Docker**
 1. **Build the Docker Image**
    ```bash
    docker build -t my-ml-api .
@@ -56,7 +62,7 @@ pip install -r requirements.txt
    docker run -p 8000:8000 my-ml-api
    ```
 
-### **4. Access the API**
+### **5. Access the API**
 - The API will be available at: `http://localhost:8000`
 - Documentation (Swagger UI): `http://localhost:8000/docs`
 
@@ -94,6 +100,7 @@ Response:
 ## **Development Notes**
 - Ensure that `model.pkl` is updated whenever the model is retrained.
 - To modify API logic, update `main.py`.
+- Add your Google Gemini API key to the `.env` file before running the application.
 
 ---
 
@@ -103,7 +110,6 @@ Response:
 - **`docker-compose.yaml`**: Optional file for multi-container orchestration.
 - **`requirements.txt`**: Lists Python dependencies.
 - **`exampleData.json`**: Sample input for testing the API.
-
 
 ---
 
