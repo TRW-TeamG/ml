@@ -150,20 +150,13 @@ Response:
 ---
 
 ## **Development Notes**
-- Ensure that `model.pkl` is updated whenever the model is retrained.
+- Ensure that `model.pkl`  and ``anomaly_model.pkl` is updated whenever the model is retrained.
 - To modify API logic, update `main.py`.
 - Add your Google Gemini API key to the `.env` file before running the application.
 
 ---
 
-## **Repository Contents**
-- **`mlmodel.py`**: Python file used to make the ML model
-- **`Dockerfile`**: Defines the environment for containerized deployment.
-- **`docker-compose.yaml`**: Optional file for multi-container orchestration.
-- **`requirements.txt`**: Lists Python dependencies.
-- **`exampleData.json`**: Sample input for testing the API.
 
----
 
 ## **Contributing**
 Feel free to fork this repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
