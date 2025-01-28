@@ -14,6 +14,9 @@ This repository contains a Random Forest Machine Learning model served through a
 ├── Dockerfile                  # Docker build instructions
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # Project documentation (you are here!)
+├── anomaly_model.pkl            # Detect anomalies/rugpull/scams amongst top performing memecoins
+├── model.pkl                    # Calculates the profit and loss of a wallet 
+├── README.md                   # Project documentation (you are here!)
 ```
 
 ---
