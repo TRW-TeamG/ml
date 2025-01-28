@@ -6,11 +6,12 @@ import pickle
 import numpy as np 
 from pydantic import BaseModel
 import google.generativeai as genai
-import os
-from sklearn.ensemble import IsolationForest
 from gmgn import gmgn
 import requests
 import pandas as pd
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 model = pickle.load(open("model.pkl", "rb") )
 anomaly_model= pickle.load(open("anomaly_model.pkl", "rb"))
