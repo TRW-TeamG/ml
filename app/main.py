@@ -7,9 +7,15 @@ import numpy as np
 from pydantic import BaseModel
 import google.generativeai as genai
 import os
-pickle_in=open("app/model.pkl", "rb") 
-model = pickle.load(pickle_in)
+from sklearn.ensemble import IsolationForest
+from gmgn import gmgn
+import requests
+import pandas as pd
 
+model = pickle.load(open("model.pkl", "rb") )
+anomaly_model= pickle.load(open("anomaly_model.pkl", "rb"))
+
+################### FUNCTIONC CALLING FUNCTIONS #################
 
 def predict_wallet_pnl(nft_pl_ratio:float, trading_pnl_ratio:float, #this function calls the model to predict the pnl of a wallet. 
                         liquidity_ratio:float, trading_frequency:float,  #The LLM will reference this function (predict_wallet_pnl) to calculate PNL from user prompt
@@ -40,11 +46,105 @@ def predict_wallet_pnl(nft_pl_ratio:float, trading_pnl_ratio:float, #this functi
     return float(prediction[0])
 
 
+def fetch_wallet_data(wallets): #takes a dictionary of wallets and returns a dictionary
+    extracted_data = []
+    for wallet in wallets:
+        data = {
+            "symbol": wallet.get("name"),
+            "holder_count": wallet.get("holder_count"),
+            "price": wallet.get("price"),
+            "liquidity": wallet.get("liquidity"),
+            "volume_24h": wallet.get("volume_24h"),
+            "volume_6h": wallet.get("volume_6h"),
+            "volume_1h": wallet.get("volume_1h"),
+            "volume_5m": wallet.get("volume_5m"),
+            "volume_1m": wallet.get("volume_1m"),
+            "swaps_24h": wallet.get("swaps_24h"),
+            "swaps_6h": wallet.get("swaps_6h"),
+            "swaps_1h": wallet.get("swaps_1h"),
+            "swaps_5m": wallet.get("swaps_5m"),
+            "swaps_1m": wallet.get("swaps_1m"),
+            "net_in_volume_24h": wallet.get("net_in_volume_24h"),
+            "net_in_volume_6h": wallet.get("net_in_volume_6h"),
+            "net_in_volume_1h": wallet.get("net_in_volume_1h"),
+            "net_in_volume_5m": wallet.get("net_in_volume_5m"),
+            "net_in_volume_1m": wallet.get("net_in_volume_1m"),
+            "fdv": wallet.get("fdv"),
+            "market_cap": wallet.get("market_cap"),
+        }
+        extracted_data.append(data)
+    return extracted_data
+
+
+
+
+def get_addresses_and_memecoin_info():
+    list_of_memecoins = []  # To store memecoin information
+    addresses = []  # To store token addresses
+
+    # Fetch data from the API
+    response = requests.get(
+        "https://api.dexscreener.com/token-profiles/latest/v1",
+        headers={}
+    )
+    
+    # Parse the JSON response
+    dex_screen_lst = response.json()
+
+    # Extract addresses
+    for token in dex_screen_lst:
+        addresses.append(token['tokenAddress'])
+
+    # Fetch memecoin info for each address
+    gmgn_instance = gmgn()
+    for address in addresses:
+        try:
+            getTokenInfo = gmgn_instance.getTokenInfo(address)  # Assuming `gmgn` is previously defined
+            list_of_memecoins.append(getTokenInfo)
+        except Exception as e:
+            # Handle errors gracefully
+            print(f"Error processing address {address}: {e}")
+            continue
+    
+    wallet_data=pd.DataFrame(fetch_wallet_data(list_of_memecoins)).dropna()
+
+    return wallet_data
+
+def anomaly_detection(wallet_data):
+    wallet_data["anomaly_score"] = anomaly_model.predict(wallet_data.iloc[:,1:])
+    bad_coins= wallet_data[wallet_data["anomaly_score"] == -1]['symbol'].tolist()
+    result = "Coin anomaly list " + ", ".join(f"${coin}" for coin in bad_coins)
+
+    return result
+
+def get_memecoin_anomalies_and_scams():
+    """
+    Analyzes top memecoins for anomalies that could be indicative of scams or high-risk investments.
+    This function fetches data from DEX screener and leverages Gemini capabilities (potentially GMGN API) to gather information about trending memecoins. It then employs anomaly detection techniques to identify coins with characteristics that deviate significantly from the norm.
+    **Important Note:** While anomalies can suggest potential scams, they are not definitive proof. Always conduct thorough due diligence before investing in any memecoin.
+
+
+    Args:
+        None
+
+    Returns:
+        str: A message listing the memecoins with ticker symbol detected anomalies and  scams. Gemini should answer the question in first person grammar
+    """
+    wallet_data = get_addresses_and_memecoin_info()
+    anomalies = anomaly_detection(wallet_data)
+    return anomalies
+
+
+
+################### FUNCTIONC CALLING FUNCTIONS  ENDS #################
+
+
+
 
 # Configure Google Generative AI
-genai.configure(api_key=os.environ['MY_API_KEY']) ##insert your API key by setting set MY_API_KEY=your_actual_api_key in the terminal
+genai.configure(api_key=os.environ['API_KEY']) ##insert your API key by setting set MY_API_KEY=your_actual_api_key in the terminal
 
-llm_model = genai.GenerativeModel(model_name="gemini-1.5-flash", tools=[predict_wallet_pnl])
+llm_model = genai.GenerativeModel(model_name="gemini-1.5-flash", tools=[predict_wallet_pnl,get_memecoin_anomalies_and_scams])
 
 
 # Define the input schema
@@ -62,7 +162,7 @@ class PromptInput(BaseModel):
 
 app = FastAPI(
     title="Trading PnL Prediction API",
-    description="Predicts trading profit and loss using a Random Forest model",
+    description="Predicts trading profit and loss using a Random Forest model and coin scam anomaly detection",
     version="2.0.0"
 )
 
