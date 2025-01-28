@@ -45,6 +45,15 @@ If running locally without Docker:
 pip install -r requirements.txt
 ```
 
+You'll need to manually install gmgn-wrapper from 1f1n by cloning the repo (https://github.com/myx0m0p/gmgnai-wrapper/tree/main) 
+
+Next, create a setup.py for this package since it doesnt have one. 
+
+change directory to the cloned repo  ``` cd path\to\gmgn-wrapper``` and run ```pip install . `` a
+
+After that, you can navigate back to your repository and ```import gmgn`` as a regular package. 
+
+
 ### **3. Add API Key**
 You need a free Google Gemini API key to use the application. `https://ai.google.dev/gemini-api/docs/api-key?authuser=1`  Add your API key to a `.env` file in the root directory:
 ```plaintext
