@@ -129,3 +129,5 @@ Feel free to fork this repository and submit pull requests. For major changes, p
 
 ## **License**
 This project is licensed under the [MIT License](LICENSE).
+
+Special thanks to 1f1n for providing the use of the [wrapper](https://github.com/1f1n/gmgnai-wrapper)
