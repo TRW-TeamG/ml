@@ -8,15 +8,17 @@ This repository contains a Random Forest Machine Learning model as well as an Is
 
 ```
 .
-├── app/
-│   ├── main.py                 # FastAPI application code
-│   ├── .env                    #recommended to have a virtual environment to store your keys
-├── Dockerfile                  # Docker build instructions
-├── requirements.txt            # Python dependencies
-├── README.md                   # Project documentation (you are here!)
-├── anomaly_model.pkl            # Detect anomalies/rugpull/scams amongst top performing memecoins
-├── model.pkl                    # Calculates the profit and loss of a wallet 
-├── README.md                   # Project documentation (you are here!)
+├── app/                         # Create .env
+│   ├── main.py                  # FastAPI application code
+│   ├── .env                     # Recommended to have a virtual environment to store your keys
+├── .dockerignore                 # Added docker files and API
+├── .gitignore                    # Create .gitignore
+├── Dockerfile                    # Added docker files and API
+├── README.md                     # Update README.md
+├── anomaly_model.pkl             # Updated LLM to include anomaly detection
+├── model.pkl                     # Create model.pkl
+├── requirements.txt              # Adjusted coder
+
 ```
 
 ---
