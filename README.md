@@ -1,6 +1,6 @@
 # ML Model Deployment with FastAPI and Docker
 
-This repository contains a Random Forest Machine Learning model served through a FastAPI application. The application is containerized with Docker, making it easy to deploy and use across environments. 🎉
+This repository contains a Random Forest Machine Learning model as well as an Isolation Forest Anomaly Detection Model integrated with Google Gemini's API. This is served through a FastAPI application. The application is containerized with Docker, making it easy to deploy and use across environments. 🎉
 
 ---
 
