@@ -10,13 +10,9 @@ This repository contains a Random Forest Machine Learning model served through a
 .
 ├── app/
 │   ├── main.py                 # FastAPI application code
-│   ├── model.pkl               # Serialized ML model
-│   ├── preprocess.py           # Preprocessing logic (if applicable)
-│   ├── mlmodel.py              # Model training/testing script
+│   ├── .env                    #recommended to have a virtual environment to store your keys
 ├── Dockerfile                  # Docker build instructions
-├── docker-compose.yaml         # Optional for multi-container setups
 ├── requirements.txt            # Python dependencies
-├── exampleData.json            # Example input data for testing
 ├── README.md                   # Project documentation (you are here!)
 ```
 
@@ -49,15 +45,24 @@ You'll need to manually install gmgn-wrapper from 1f1n by cloning the repo (http
 
 Next, create a setup.py for this package since it doesnt have one. 
 
-change directory to the cloned repo  ``` cd path\to\gmgn-wrapper``` and run ```pip install . `` a
+change directory to the cloned repo  
 
-After that, you can navigate back to your repository and ```import gmgn`` as a regular package. 
+``` 
+cd path\to\gmgn-wrapper
+```  
+After that, enter the following command in your terminal
+
+``` 
+pip install .
+```  
+
+After that, you can navigate back to your repository and ```import gmgn``` as a regular package. 
 
 
 ### **3. Add API Key**
 You need a free Google Gemini API key to use the application. `https://ai.google.dev/gemini-api/docs/api-key?authuser=1`  Add your API key to a `.env` file in the root directory:
 ```plaintext
-GOOGLE_API_KEY=your-google-api-key
+API_KEY=your-google-api-key
 ```
 
 ### **4. Build and Run with Docker**
@@ -97,12 +102,47 @@ Using `curl`:
 curl -X POST "http://localhost:8000/predict" -H "Content-Type: application/json" -d @input.json
 ```
 
-Response:
+#### Response:
 ```json
 {
   "prediction": 0.435
 }
 ```
+
+### Using the LLM to predict PnL:
+```curl -X POST "http://127.0.0.1:8000/llm/predict" \
+-H "Content-Type: application/json" \
+-d '{
+  "prompt": "Calculate the PNL of a wallet with an NFT PNL ratio of 0.5, trading PNL ratio of 0.3, liquidity ratio of 0.7, trading frequency of 0.2, and NFT sales rate of 0.4. Also, detect any anomalies in the top memecoins."
+}'
+```
+
+#### Response:
+```json
+{
+  "prediction": "The predicted PNL of the wallet is 2.2.  Note that this is just a prediction based on the provided data and the model used by the `predict_wallet_pnl` function.  The actual PNL may vary.\n"
+}
+```
+
+### Using the LLM to detect scams or anomalies among the top trending memecoins in DEXSCREENER:
+```curl -X 'POST' \
+  'http://127.0.0.1:8000/llm/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "prompt": "Which trending memecoins might be rugpulls or scams"
+}'
+```
+
+Response:
+```json
+{
+  "llm_response": "I have analyzed top trending memecoins and detected anomalies in the following: $Wallahi im fucked, $shut up, $AI War, $Kiss, $aipump, $DADDY DOGE, $Pets, $Official Taylor Swift, $Trenches, $OFFICIAL FIFA TOKEN, $Maltipoo, $PVPAI.  These anomalies could be indicative of scams or high-risk investments.  However, it is important to remember that this is not definitive proof of a scam, and you should always conduct your own thorough due diligence before investing in any memecoin.\n"
+}
+```
+
+
+
 
 ---
 
