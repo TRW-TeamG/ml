@@ -65,7 +65,7 @@ After that, you can navigate back to your repository and ```import gmgn``` as a 
 
 
 ### **3. Add API Key**
-You need a free Google Gemini API key to use the application. `https://ai.google.dev/gemini-api/docs/api-key?authuser=1`  Add your API key to a `.env` file in the root directory:
+You need a free Google Gemini API key to use the application. (https://ai.google.dev/gemini-api/docs/api-key?authuser=1)  Add your API key to a `.env` file in the root directory:
 ```plaintext
 API_KEY=your-google-api-key
 ```
