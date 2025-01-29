@@ -5,13 +5,9 @@ import uvicorn
 import pickle
 import numpy as np 
 from pydantic import BaseModel
-import google.generativeai as genai
 from gmgn import gmgn
 import requests
 import pandas as pd
-from dotenv import load_dotenv
-import os
-load_dotenv()
 
 model = pickle.load(open("model.pkl", "rb") )
 anomaly_model= pickle.load(open("anomaly_model.pkl", "rb"))
@@ -114,8 +110,7 @@ def get_addresses_and_memecoin_info():
 def anomaly_detection(wallet_data):
     wallet_data["anomaly_score"] = anomaly_model.predict(wallet_data.iloc[:,1:])
     bad_coins= wallet_data[wallet_data["anomaly_score"] == -1]['symbol'].tolist()
-    result = "Coin anomaly list " + ", ".join(f"${coin}" for coin in bad_coins)
-
+    result = "" + ", ".join(f"${coin}" for coin in bad_coins)
     return result
 
 def get_memecoin_anomalies_and_scams():
@@ -137,17 +132,6 @@ def get_memecoin_anomalies_and_scams():
 
 
 
-################### FUNCTIONC CALLING FUNCTIONS  ENDS #################
-
-
-
-
-# Configure Google Generative AI
-genai.configure(api_key=os.environ['API_KEY']) ##insert your API key by setting set MY_API_KEY=your_actual_api_key in the terminal
-
-llm_model = genai.GenerativeModel(model_name="gemini-1.5-flash", tools=[predict_wallet_pnl,get_memecoin_anomalies_and_scams])
-
-
 # Define the input schema
 class PredictionInput(BaseModel):
     nft_pl_ratio: float #nft pnl ratio is calculated by dividing nft_pnl by total pnl (realized_pnl + unrealized_pnl)
@@ -162,18 +146,17 @@ class PromptInput(BaseModel):
 
 
 app = FastAPI(
-    title="Trading PnL Prediction API",
-    description="Predicts trading profit and loss using a Random Forest model and coin scam anomaly detection",
+    title="Trading PnL and Scamcoin Prediction API",
+    description="Predicts trading profit and loss using a Random Forest model and memecoin scam detection via Isolation Forest",
     version="2.0.0"
 )
 
 
 
 
-
 @app.get("/")
 async def root() -> Dict[str, str]:
-    return {"message": "Welcome to the Trading PnL Prediction API"}
+    return {"message": "Welcome RF PnL and Scamcoin Prediction API"}
 
 @app.get("/health")
 async def health_check() -> Dict[str, str]:
@@ -197,17 +180,15 @@ async def predict(input_data: PredictionInput):
     
 
     
-@app.post("/llm/predict")
-async def llm_predict(prompt_input: PromptInput):
+@app.post("/scamcoins_isoforest/predict")
+async def scamcoin_prediction():
     """
-    Use the LLM to process the user-provided prompt and call `predict_wallet_pnl`.
+    Fetches the Open DEXScreener API and returns suspected scam coins/rugpulls via isolation forest anomaly detection
     """
-    chat = llm_model.start_chat(enable_automatic_function_calling=True) #ensure enable_automatic_function_calling=True. Starts the Chat
-
     # Send the user-provided prompt to the LLM
     try:
-        result = chat.send_message(prompt_input.prompt).text #outputs the text
-        return {"llm_response": result} #returns as a result
+        result = get_memecoin_anomalies_and_scams()
+        return {"scam_memecoins": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
