@@ -115,11 +115,11 @@ app = FastAPI(
 
 
 @app.get("/")
-async def root() -> Dict[str, str]:
+async def root(token: str = Depends(verify_token)) -> Dict[str, str]:
     return {"message": "Welcome RF PnL and Scamcoin Prediction API"}
 
 @app.get("/health")
-async def health_check() -> Dict[str, str]:
+async def health_check(token: str = Depends(verify_token)) -> Dict[str, str]:
     return {"status": "healthy"}
 
 @app.post("/rf/predict")
@@ -139,7 +139,7 @@ async def predict(input_data: PredictionInput, token: str = Depends(verify_token
 
     
 @app.post("/scamcoins_isoforest/predict")
-async def scamcoin_prediction():
+async def scamcoin_prediction(token: str = Depends(verify_token)):
     """
     Fetches the Open DEXScreener API and returns suspected scam coins/rugpulls via isolation forest anomaly detection
     """
